@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>IntellaFeed</title>
+    <!-- Bootstrap -->
+    <!-- <link rel="icon" type="image/png" href="/images/favicon.ico"> -->
+    <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet"></link>
+    <link href="/css/quest.css" rel="stylesheet"></link>
+  </head>
+  <body>
+    <div class="container">
+      <div align="center">
+        <form method="post" action="/search">
+          <div class="input-append spacer">
+            <input type="text" class="input-xxlarge" id="searchText" name="searchTerm">
+            <button type="submit" class="btn"><i class="icon-search"></i></button>
+            <input type="hidden" id="query" name="query">
+            <input type="hidden" id="tag" name="tag">
+            <div class="ui-widget" style="margin-top: 2em; font-family: Arial;"></div>
+          </div>
+        </form>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="/js/suggest.js"></script>
+    <script>
+      $("#searchText").focus();
+    </script>
+  </body>
+</html>
+
