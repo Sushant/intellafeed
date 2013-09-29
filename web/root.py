@@ -20,6 +20,16 @@ class Root:
     template = templates.get('index.html')
     return template.render()
 
+  @cherrypy.expose
+  def settings(self):
+    template = templates.get('settings.html')
+    return template.render()
+
+  @cherrypy.expose
+  def save_settings(self):
+    pass
+
+
 if __name__ == '__main__':
 
   config = {
