@@ -8,24 +8,28 @@
     <link href="/css/quest.css" rel="stylesheet"></link>
   </head>
   <body>
-    <div class="container">
-      <div align="center">
-        <form method="post" action="/search">
-          <div class="input-append spacer">
-            <input type="text" class="input-xxlarge" id="searchText" name="searchTerm">
-            <button type="submit" class="btn"><i class="icon-search"></i></button>
-            <input type="hidden" id="query" name="query">
-            <input type="hidden" id="tag" name="tag">
-            <div class="ui-widget" style="margin-top: 2em; font-family: Arial;"></div>
-          </div>
-        </form>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="brand" href="#">IntellaFeed</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="#settings">Settings</a></li>
+            </ul>
+          </div><!--/.nav-collapse -->
+        </div>
+      </div>
     </div>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/bootstrap.min.js"></script>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
-    <script src="/js/suggest.js"></script>
     <script>
       $("#searchText").focus();
     </script>
