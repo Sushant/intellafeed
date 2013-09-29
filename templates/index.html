@@ -7,14 +7,13 @@
     <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet"></link>
     <style type="text/css">
       .entity {
-        border-bottom: 1px dashed #999;
+        border-bottom: 1px dashed #BADA55;
         display: inline;
         cursor: pointer;
       }
       #dialog {
         height: 50px;
-        width: 100px;
-        overflow: auto;
+        overflow: scroll;
       }
     </style>
   </head>
@@ -27,7 +26,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">IntellaFeed</a>
+          <a class="brand" href="/">IntellaFeed</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="/settings">Settings</a></li>
@@ -39,18 +38,21 @@
 
     <div class="container" id="main_body" style="margin-top: 85px;">
       {% for item in feed_items %}
+        <img src="{{ item['logo_url']}}" width="80px;" style=""/>
         {% if item['html'] %}
         <span>{{ item['html'] }}</span>
-        {% else %}
+        {% elif item['description'] %}
         <span>{{ item['description'] }}</span>
+        {% else %}
+        <span>{{ item['title'] }}</span>
         {% endif %}
-        <a href="{{ item['URL'] }}" target="_blank">Read full article</a>
+        <a href="{{ item['URL'] }}" target="_blank">&#8594;</a>
         <hr />
       {% endfor %}
     </div>
 
-    <div id="dialog" style="border:1px solid #ccc;font-size:11px;">
-      <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
+    <div id="dialog" style="border:1px solid #ccc;font-size:11px;height:200px;overflow:scroll;">
+      <p>No results found</p>
     </div>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -79,6 +81,7 @@
         console.log(data);
         var results = data.results[0];
         $('#dialog').html(results);
+        $("#dialog").css({height: "200px"});
         $( "#dialog" ).dialog( "open" );
       }
     </script>

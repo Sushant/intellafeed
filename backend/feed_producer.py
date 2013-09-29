@@ -49,7 +49,7 @@ class FeedsProducer(QueueHandler):
 
 
   def init_config(self):
-    self.sleep_time_in_sec = 60
+    self.sleep_time_in_sec = 5
     self.feed_freshness = 60
     self.bulk_processing_size = 50
 
@@ -61,11 +61,10 @@ class FeedsProducer(QueueHandler):
 
   def queue_feeds(self):
     try:
-      #refresh_window = datetime.utcnow() - timedelta(minutes=self.feed_freshness)
-      refresh_window = datetime.utcnow() - timedelta(seconds=1)
-      #feeds = list(self.feeds_to_refresh_collection.find({'last_update_time': {'$lte': refresh_window}},
-      #  {'url': 1}).limit(self.bulk_processing_size))
-      feeds = list(self.feeds_to_refresh_collection.find({},{'url': 1}).limit(self.bulk_processing_size))
+      refresh_window = datetime.utcnow() - timedelta(minutes=self.feed_freshness)
+      feeds = list(self.feeds_to_refresh_collection.find({'last_update_time': {'$lte': refresh_window}},
+        {'url': 1}).limit(self.bulk_processing_size))
+      #feeds = list(self.feeds_to_refresh_collection.find({},{'url': 1}).limit(self.bulk_processing_size))
       print feeds
     except Exception as e:
       print e
@@ -88,10 +87,11 @@ class FeedsProducer(QueueHandler):
       #self.logger.exception('Failed to queue feed %s for processing:' % str(feed['url']))
       return
 
-    #try:
-    #  self.feeds_to_refresh_collection.update({'_id': feed['_id']},
-    #      {'$set': {'state': 'queued', 'last_update_time': datetime.utcnow()}})
-    #except Exception as e:
+    try:
+      self.feeds_to_refresh_collection.update({'_id': feed['_id']},
+          {'$set': {'state': 'queued', 'last_update_time': datetime.utcnow()}})
+    except Exception as e:
+      print e
     #  pass
       #self.logger.error('Failed to update state for feed "%s"' % (self.name, feed['url']), traceback.format_exc())
 
