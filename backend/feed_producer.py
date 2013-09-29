@@ -56,7 +56,7 @@ class FeedsProducer(QueueHandler):
 
   def init_db(self):
     self.mongo_handler = MongoHandler()
-    self.feeds_to_refresh_collection = self.mongo_handler.db['feeds_to_refresh']
+    self.feeds_to_refresh_collection = self.mongo_handler.db['feeds_to_refresh1']
 
 
   def queue_feeds(self):

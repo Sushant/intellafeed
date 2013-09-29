@@ -24,6 +24,7 @@ class Root:
 
 
   def hash_url(self, url):
+    print url
     url = url.decode('utf8')
     digest = hashlib.sha1(url).digest()
     b64digest = base64.encodestring(digest).strip().encode('string_escape')
@@ -38,7 +39,10 @@ class Root:
   def index(self):
     template = templates.get('index.html')
     user_items = []
-    user_feeds = self.mongo.db.user_feeds1.find_one({'_id': 1})['feeds']
+    try:
+      user_feeds = self.mongo.db.user_feeds2.find_one({'_id': 1})['feeds']
+    except:
+      user_feeds = []
     for feed in user_feeds:
       url = self.hash_url(feed)
       feed_items = self.mongo.db.feeds_entities.find_one({'_id': url})
@@ -51,7 +55,11 @@ class Root:
   @cherrypy.expose
   def settings(self):
     template = templates.get('settings.html')
-    return template.render()
+    try:
+      user_feeds = self.mongo.db.user_feeds2.find_one({'_id': 1})['feeds']
+    except:
+      user_feeds = None
+    return template.render({'feeds': user_feeds})
 
   @cherrypy.expose
   def save_settings(self, *args, **kwargs):
@@ -61,10 +69,10 @@ class Root:
       if k.startswith('item'):
         feeds.append(v)
     try:
-      self.mongo.db.user_feeds1.save({'_id': 1, 'feeds': feeds})
+      self.mongo.db.user_feeds2.save({'_id': 1, 'feeds': feeds})
     except Exception as e:
       print e
-    pass
+    raise cherrypy.HTTPRedirect('/settings')
 
 
 if __name__ == '__main__':

@@ -46,7 +46,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="#">IntellaFeed</a>
+          <a class="brand" href="/">IntellaFeed</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li><a href="#settings">Settings</a></li>
@@ -60,7 +60,19 @@
       <div class="hero-unit">
         <form class="form-horizontal" method="post" action="/save_settings">
           <div class="control-group" id="cg-1">
-            <div class="controls">
+            <div class="controls" style="margin-left:50px;">
+              {% if feeds %}
+              <label>Your feeds:</label>
+              <hr />
+              {% set index = 1000 %}
+              {% for feed in feeds%}
+
+              <ul>{{ feed }}</ul>
+              <input type="hidden" name="item{{index}}" value="{{feed}}">
+              {% set index = index + 1 %}
+              {% endfor %}
+              {% endif %}
+              <hr />
               <input type="text" class="input-xlarge" name="item1" id="inputItem1" placeholder="Feed URL">
               <button type="button" class="btn btn-info" id="addItem" onclick="addAnotherItem();">Add another item</button>
             </div>

@@ -37,7 +37,7 @@ class FeedsCollector:
 
   def init_db(self):
     self.mongo_handler = MongoHandler()
-    self.feeds_to_refresh_collection = self.mongo_handler.db['feeds_to_refresh']
+    self.feeds_to_refresh_collection = self.mongo_handler.db['feeds_to_refresh1']
     #self.feeds_to_refresh_collection.ensure_index('url')
 
 
@@ -55,7 +55,7 @@ class FeedsCollector:
 
   def get_feeds_from_profiles(self):
     all_feeds = set()
-    for user_feeds in list(self.mongo_handler.db.user_feeds1.find()):
+    for user_feeds in list(self.mongo_handler.db.user_feeds2.find()):
       try:
         feeds = user_feeds['feeds']
 
@@ -84,7 +84,7 @@ class FeedsCollector:
     new_feeds = []
     for feed in feeds:
       try:
-        feed_doc = self.mongo_handler.db.feeds_to_refresh.find_one({'url': feed})
+        feed_doc = self.mongo_handler.db.feeds_to_refresh1.find_one({'url': feed})
         if not feed_doc:
           new_feeds.append({'url': feed, 'failed_count': 0, 'last_update_time': DEFAULT_TIMESTAMP})
       except Exception as e:
@@ -107,7 +107,7 @@ class FeedsCollector:
   def run(self):
     all_feeds = self.get_feeds_from_profiles()
     self.add_new_feeds(all_feeds)
-    self.exit()
+    #self.exit()
 
 
   def exit(self):
@@ -117,4 +117,6 @@ class FeedsCollector:
 
 if __name__ == '__main__':
   fc = FeedsCollector()
-  fc.run()
+  while True:
+    fc.run()
+    time.sleep(5)
