@@ -26,23 +26,21 @@ class Aggregator :
         self.news_search = Search_Api(my_key)
         self.org_feed = None
         self.original = False
-        self.data = open("test.txt", "r").read()
-        self.mongo = mongo_handler.MongoHandler() 
-        #print self.mongo.db.entity_score.find()
+        self.data =""# open("test.txt", "r").read()
         self.entities = {}
         self.feed_list = []
         self.url_scores = {}
-        
+        self.url_dates = {}
     def clean_text(self, data):
-        return re.sub('[^A-Za-z0-9]+', ' ', data)
- 
+        r= re.sub('[^A-Za-z0-9]+', ' ', data)
+        return r
     def get_feed_object(self, data):
-        # print self.news.get_entities("contentanalysis.analyze", self.clean_text(data))
-        try:
+       try:
+           print self.news.get_entities("contentanalysis.analyze", self.clean_text(data))
            return json.loads(self.news.get_entities("contentanalysis.analyze", self.clean_text(data)))
-        except:
+       except:
            pass
-        return None 
+       return None 
         
     def get_feed_entities(self, data):
         
@@ -55,6 +53,7 @@ class Aggregator :
             else :     
                feed = self.get_feed_object(data)
                
+               
             query = ""
             if feed['query']['results']['entities']['entity']:
                for entity in feed['query']['results']['entities']['entity']:
@@ -66,11 +65,12 @@ class Aggregator :
             return query
             
         except :
-            #print "Error in getting the news entities"
             pass    
         return None
    
-    def get_search_urls(self, data=None):
+    def get_search_urls(self):
+        
+        self.data = open("test.txt", "r").read() #
         query = self.get_feed_entities(self.data)
         result = self.news_search.search('news', query)
         for row in result['d']['results']:
@@ -79,41 +79,38 @@ class Aggregator :
                    text = self.html_to_text(url['Url'])
                    content_analysis = self.get_feed_object(text)
                    self.set_entities_url_score(content_analysis, url['Url'])
-        sorted_x = sorted(self.url_scores.iteritems(), key=operator.itemgetter(1))
+        sorted_scores = sorted(self.url_scores.iteritems(), key=operator.itemgetter(1))
         URLS = []
-        for i in range(len(sorted_x)):
-            URLS.append(sorted_x[i][0])
+        
+        for i in range(len(sorted_scores)):
+            URLS.append(sorted_scores[i][0])
+            
         return URLS
             
     def set_entities_url_score(self,content_analysis,url):
         try:
-            temp_entities = {}
+    
             score = 0.0
-            s=0.0
             if content_analysis['query']['results']['entities']['entity']:
-                
                for entity in content_analysis['query']['results']['entities']['entity']:
                    if entity['text']['content'] in self.entities:
-                         s+=float(entity['score'])-float(self.entities[entity['text']['content']])
-            self.url_scores[url]=s
-                                     
+                         score+=float(entity['score'])-float(self.entities[entity['text']['content']])
+            self.url_scores[url]=score
+            self.url_dates[url] = content_analysis['created']                         
         except:
             pass                        
                    
                            
     def html_to_text(self, url):
-        html = urlopen(url).read()    
-        return nltk.clean_html(html)  
-           
-                        
-    
-
+        try:
+          html = urlopen(url).read()    
+          return nltk.clean_html(html)  
+        except :
+            pass
+        return None   
     
 y = Aggregator()
 y.get_search_urls()
 y.news_search.skip += 100
 y.get_search_urls()
-#print bing.search('news',query_string)
-#bing.skip=100
-#print bing.search('news',query_string)        
-     
+
