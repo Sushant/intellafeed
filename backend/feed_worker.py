@@ -46,7 +46,7 @@ class FeedsWorker(QueueHandler):
     self.yql = yql.TwoLegged(params.YAHOO_API_KEY, params.YAHOO_API_SECRET)
 
   def init_config(self):
-    self.feeds_to_refresh_collection = 'feeds_to_refresh'
+    self.feeds_to_refresh_collection = 'feeds_to_refresh1'
     self.max_feed_items = 50
     self.feed_timeout = 120
 
