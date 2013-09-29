@@ -23,7 +23,7 @@ class MongoHandler():
     self.db_connection_str = 'localhost:27017'
     #self.db_user = config_handler.get_key_from_config('db_user', 'admin')
     #self.db_password = config_handler.get_key_from_config('db_password', 'int311af33d')
-    self.db_name = config_handler.get_key_from_config('db_name', 'intellafeed')
+    self.db_name = 'intellafeed'
 
 
   def init_db(self):
@@ -34,4 +34,4 @@ class MongoHandler():
 
   def close_connection(self):
     if self.db_connection:
-      elf.db_connection.close()
+      self.db_connection.close()

@@ -5,7 +5,18 @@
     <!-- Bootstrap -->
     <!-- <link rel="icon" type="image/png" href="/images/favicon.ico"> -->
     <link href="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.1.1/css/bootstrap.min.css" rel="stylesheet"></link>
-    <link href="/css/quest.css" rel="stylesheet"></link>
+    <style type="text/css">
+      .entity {
+        border-bottom: 1px dashed #999;
+        display: inline;
+        cursor: pointer;
+      }
+      #dialog {
+        height: 50px;
+        width: 100px;
+        overflow: auto;
+      }
+    </style>
   </head>
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -19,11 +30,27 @@
           <a class="brand" href="#">IntellaFeed</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li><a href="#settings">Settings</a></li>
+              <li><a href="/settings">Settings</a></li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
+    </div>
+
+    <div class="container" id="main_body" style="margin-top: 85px;">
+      {% for item in feed_items %}
+        {% if item['html'] %}
+        <span>{{ item['html'] }}</span>
+        {% else %}
+        <span>{{ item['description'] }}</span>
+        {% endif %}
+        <a href="{{ item['URL'] }}" target="_blank">Read full article</a>
+        <hr />
+      {% endfor %}
+    </div>
+
+    <div id="dialog" style="border:1px solid #ccc;font-size:11px;">
+      <p>This is an animated dialog which is useful for displaying information. The dialog window can be moved, resized and closed with the 'x' icon.</p>
     </div>
 
     <script src="http://code.jquery.com/jquery-latest.js"></script>
@@ -31,7 +58,29 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
     <script>
-      $("#searchText").focus();
+      $(function() {
+        $( "#dialog" ).dialog({
+          autoOpen: false,
+        })
+      });
+      function getInfobox(url) {
+        var yqlQuery = 'select * from html where url="' + url + '" AND xpath=\'//*[contains(@class,"infobox")]\';';
+        var yqlURL = 'http://query.yahooapis.com/v1/public/yql?q=' + escape(yqlQuery) + '&format=xml&callback=infobox';
+        console.log(yqlURL);
+        $.ajax({
+          url: yqlURL,
+          /* }).done(function(data) { */
+          /* console.log(data); */
+          /* $('.container').append(result); */
+          });
+      }
+    
+      function infobox(data) {
+        console.log(data);
+        var results = data.results[0];
+        $('#dialog').html(results);
+        $( "#dialog" ).dialog( "open" );
+      }
     </script>
   </body>
 </html>
