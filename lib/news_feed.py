@@ -7,6 +7,7 @@ import urllib
 import json
 import requests
 import string
+import xmltodict
 
 class NewsFeed:
     
@@ -23,12 +24,13 @@ class NewsFeed:
  
 class Search_Api:
     
-    bing_api = "https://api.datamarket.azure.com/Data.ashx/Bing/Search/v1/Composite?"
+    bing_search_api = "https://api.datamarket.azure.com/Data.ashx/Bing/Search/v1/Composite?"
+    bing_syms_api = "https://api.datamarket.azure.com/Bing/Synonyms/v1/GetSynonyms"
     
     def __init__(self, key):
         self.key = key
-        self.params = {'ImageFilters':'"Face:Face"',
-              '$format': 'json',
+        self.params = {
+              'format': 'json',
               '$top': 10,
               '$skip': 0}
         
@@ -47,22 +49,29 @@ class Search_Api:
         request += '&Query="'  + str(query) + '"'
         for key,value in self.params.iteritems():
             request += '&' + key + '=' + str(value) 
-        request = self.bing_api + self.replace_symbols(request)
+        request = self.bing_search_api + self.replace_symbols(request)
         return requests.get(request, auth=(self.key, self.key))
-
+   
+    def synonyms(self,entity):
+        request = '?Query="'  + str(entity) + '"'
+        request = self.bing_syms_api + self.replace_symbols(request)
+        r=requests.get(request, auth=(self.key, self.key))
+        json_response = xmltodict.parse(r.text)
+        return json.dumps(json_response)
     
 
 if __name__ == '__main__' :
     
     ''' TEST THE API '''
     feed = NewsFeed()
-    print feed.get_entities("contentanalysis.analyze","Mitt Romney had a nice time talking to Monica Lewinsky")
+    #print feed.get_entities("contentanalysis.analyze","Mitt Romney had a nice time talking to Monica Lewinsky")
     
     my_key = "1CwlOHlzyZJU60mk8lHl6L83DLl+LJuK5ayKz4Q9rAA"
     query_string = "Brad Pitt"
     bing = Search_Api(my_key)
     
-    print bing.search('image+web',query_string).json() # requests 1.0+
+    #print bing.search('news',query_string).json() # requests 1.0+
+    #print bing.synonyms("apple")
     
     
     
