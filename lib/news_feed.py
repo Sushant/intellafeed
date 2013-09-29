@@ -29,11 +29,12 @@ class Search_Api:
     
     def __init__(self, key):
         self.key = key
+        self.skip = 0
         self.params = {
-              'format': 'json',
-              '$top': 10,
-              '$skip': 0}
-        
+              #'format': 'json',
+              '$top': 30,
+              '$skip': self.skip}
+       
 
     def replace_symbols(self, request):
  
@@ -50,8 +51,10 @@ class Search_Api:
         for key,value in self.params.iteritems():
             request += '&' + key + '=' + str(value) 
         request = self.bing_search_api + self.replace_symbols(request)
-        return requests.get(request, auth=(self.key, self.key))
-   
+        xml = requests.get(request, auth=(self.key, self.key))
+        json_response = xmltodict.parse(xml.text)
+        return json.dumps(json_response)
+     
     def synonyms(self,entity):
         request = '?Query="'  + str(entity) + '"'
         request = self.bing_syms_api + self.replace_symbols(request)
@@ -64,13 +67,15 @@ if __name__ == '__main__' :
     
     ''' TEST THE API '''
     feed = NewsFeed()
-    #print feed.get_entities("contentanalysis.analyze","Mitt Romney had a nice time talking to Monica Lewinsky")
+    print feed.get_entities("contentanalysis.analyze","Mitt Romney had a nice time talking to Monica Lewinsky")
     
     my_key = "1CwlOHlzyZJU60mk8lHl6L83DLl+LJuK5ayKz4Q9rAA"
     query_string = "Brad Pitt"
     bing = Search_Api(my_key)
     
-    #print bing.search('news',query_string).json() # requests 1.0+
+    print bing.search('news',query_string)
+    bing.skip=100
+    print bing.search('news',query_string)
     #print bing.synonyms("apple")
     
     
